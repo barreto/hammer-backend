@@ -1,22 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
 
 import logging from '../config/logging';
-
-const NAMESPACE = 'Server';
+import NAMESPACES from '../enums/namespaces';
 
 /** Logging the reques */
-export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
+const requestLogger = (req: Request, res: Response, next: NextFunction) => {
     logging.info(
-        NAMESPACE,
+        NAMESPACES.SERVER,
         `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}]`
     );
 
     res.on('finish', () => {
         logging.info(
-            NAMESPACE,
+            NAMESPACES.SERVER,
             `METHOD - [${req.method}], URL - [${req.url}], IP - [${req.socket.remoteAddress}], STATUS - [${res.statusCode}]`
         );
     });
 
     next();
 };
+
+export default requestLogger;

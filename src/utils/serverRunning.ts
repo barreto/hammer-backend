@@ -1,6 +1,7 @@
 import logging from '../config/logging';
-import NAMESPACES from '../constants/namespaces';
+import NAMESPACES from '../enums/namespaces';
 
-export const serverRunning = (hostname: string, port: number) => {
+function serverRunning(hostname: string, port: number) {
     logging.info(NAMESPACES.SERVER, `Server running on ${hostname}:${port}`);
-};
+}
+export default serverRunning;
