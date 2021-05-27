@@ -1,26 +1,28 @@
+import { AxiosRequestConfig } from 'axios';
+
 import dockerAPI from '../api/dockerAPI';
 import logging from '../config/logging';
 import NAMESPACES from '../enums/namespaces';
 
-export default class ImagesServiceClass {
+export default class ImagesService {
     // Singleton
-    private static _instance: ImagesServiceClass = new ImagesServiceClass();
+    private static _instance: ImagesService = new ImagesService();
 
-    constructor() {
-        if (ImagesServiceClass._instance) {
+    constructor(private NAMESPACE = NAMESPACES.ImagesService) {
+        if (ImagesService._instance) {
             throw new Error(
-                'Error: Instantiation failed: Use ImagesServiceClass.getInstance() instead of new.'
+                'Error: Instantiation failed: Use ImagesService.getInstance() instead of new.'
             );
         }
-        ImagesServiceClass._instance = this;
+        ImagesService._instance = this;
     }
 
-    public static getInstance(): ImagesServiceClass {
-        return ImagesServiceClass._instance;
+    public static getInstance(): ImagesService {
+        return ImagesService._instance;
     }
 
     async getImages() {
-        logging.info(NAMESPACES.ImagesService, 'Images service has been called');
+        logging.info(this.NAMESPACE, 'has been called with method getImages');
         return await dockerAPI.get('images/json');
     }
 
@@ -36,13 +38,34 @@ export default class ImagesServiceClass {
      */
     async createImage(
         fromImage: string,
-        fromSrc: string,
-        repo: string,
-        tag: string,
-        message: string,
+        fromSrc?: string,
+        repo?: string,
+        tag?: string,
+        message?: string,
         platform: string = ''
     ) {
-        logging.info(NAMESPACES.ImagesService, 'Images service has been called');
-        return await dockerAPI.get('images/json');
+        logging.info(this.NAMESPACE, 'has been called with method createImage');
+
+        const options: AxiosRequestConfig = {
+            params: { fromImage, fromSrc, repo, tag, message, platform },
+            headers: {
+                'Content-Type': 'application/tar',
+                'X-Registry-Auth': process.env.DOCKER_TOKEN
+            }
+        };
+
+        try {
+            const response = await dockerAPI.post('images/create', null, options);
+            logging.info(this.NAMESPACE, 'createImage - response', response);
+
+            return { message: 'Image created with success.', status: response.status };
+        } catch (error) {
+            return { message: error.response.data.message, status: error.response.status };
+        }
+    }
+
+    async prune() {
+        logging.info(this.NAMESPACE, 'has been called with method deleteUnused');
+        return await dockerAPI.post('images/prune');
     }
 }

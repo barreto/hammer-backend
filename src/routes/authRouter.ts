@@ -1,9 +1,9 @@
 import * as express from 'express';
 
-import ImagesController from '../controllers/ImagesController';
+import AuthController from '../controllers/AuthController';
 
 const authRouter = express.Router();
 
-authRouter.get('/', ImagesController.show);
+authRouter.post('/', AuthController.auth);
 
 export default authRouter;
