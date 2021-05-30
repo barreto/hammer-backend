@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import logging from '../config/logging';
 import NAMESPACES from '../enums/namespaces';
+import Image from '../models/image';
 import ImagesServiceClass from '../services/ImagesService';
 
 class ImagesController {
@@ -13,30 +14,40 @@ class ImagesController {
     show = async (req: Request, res: Response, next: NextFunction) => {
         logging.info(this.NAMESPACE, 'Images Controller route called with method show');
 
-        const { data } = await this.imagesService.getImages();
-
-        return res.json(data);
+        try {
+            const result = await this.imagesService.listImages();
+            logging.info(this.NAMESPACE, 'success at method show', result);
+            return res.status(200).json({ images: result, count: result.length });
+        } catch (error) {
+            logging.error(this.NAMESPACE, error.message, error);
+            return res.status(500).json({ error: error.message });
+        }
     };
 
     create = async (req: Request, res: Response, next: NextFunction) => {
-        logging.info(this.NAMESPACE, 'Images Controller route called with method create');
+        logging.info(this.NAMESPACE, 'create was called', req.body);
+        const { fromImage, fromSrc, repo, tag, commitMessage, platform } = req.body;
 
-        const { fromImage, fromSrc, repo, tag, commitMessage, platform } = req.query;
+        const hasValidParams = fromImage && tag && fromImage?.trim() && tag?.trim();
 
-        const { message, status } = await this.imagesService.createImage(
-            fromImage as string,
-            fromSrc as string,
-            repo as string,
-            tag as string,
-            commitMessage as string,
-            platform as string
-        );
+        if (!hasValidParams) {
+            const params = { fromImage, tag };
+            logging.error(this.NAMESPACE, 'Invalid required values on createImage', params);
+            return res.status(400).json({ message: 'values of fromImage and tag are required.' });
+        }
 
-        return res.status(status).json({ message });
+        try {
+            const newImage = new Image(fromImage, tag, commitMessage, fromSrc, repo, platform);
+            const { message, status, state } = await this.imagesService.createImage(newImage);
+            return res.status(status).json({ message, state });
+        } catch (error) {
+            logging.error(this.NAMESPACE, error.message, error);
+            return res.status(500).json({ message: error.message });
+        }
     };
 
-    prune = async (req: Request, res: Response, next: NextFunction) => {
-        logging.info(this.NAMESPACE, 'Images Controller route called with method deleteUnused');
+    delete = async (req: Request, res: Response, next: NextFunction) => {
+        logging.info(this.NAMESPACE, 'Images Controller route called with method delete');
 
         const { data } = await this.imagesService.prune();
 

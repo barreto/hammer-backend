@@ -3,30 +3,38 @@ import { AxiosRequestConfig } from 'axios';
 import dockerAPI from '../api/dockerAPI';
 import logging from '../config/logging';
 import NAMESPACES from '../enums/namespaces';
+import InstatiationError from '../erros/InstantiationError';
+import Image from '../models/image';
 
 export default class ImagesService {
     // Singleton
     private static _instance: ImagesService = new ImagesService();
 
     constructor(private NAMESPACE = NAMESPACES.ImagesService) {
-        if (ImagesService._instance) {
-            throw new Error(
-                'Error: Instantiation failed: Use ImagesService.getInstance() instead of new.'
-            );
-        }
-        ImagesService._instance = this;
+        if (ImagesService._instance) throw new InstatiationError(this.NAMESPACE);
+        else ImagesService._instance = this;
     }
 
     public static getInstance(): ImagesService {
         return ImagesService._instance;
     }
 
-    async getImages() {
+    /**
+     * Returns a list of images on the server. Note that it uses a different, smaller representation of an image than inspecting a single image.
+     *
+     * @param all Show all images. Only images from a final layer (no children) are shown by default.
+     * @param digests Show digest information as a ```RepoDigests``` field on each image.
+     * @returns
+     */
+    async listImages(all: boolean = false, digests: boolean = false) {
         logging.info(this.NAMESPACE, 'has been called with method getImages');
-        return await dockerAPI.get('images/json');
+        const config: AxiosRequestConfig = { params: { all, digests } };
+        const { data } = await dockerAPI.get('images/json', config);
+        return data;
     }
 
     /**
+     * Create an image by either pulling it from a registry or importing it.
      *
      * @param fromImage Name of the image to pull. The name may include a tag or digest. This parameter may only be used when pulling an image. The pull is cancelled if the HTTP connection is closed.
      * @param fromSrc Source to import. The value may be a URL from which the image can be retrieved or - to read the image from the request body. This parameter may only be used when importing an image.
@@ -36,32 +44,43 @@ export default class ImagesService {
      * @param platform Platform in the format os[/arch[/variant]]
      * @returns
      */
-    async createImage(
-        fromImage: string,
-        fromSrc?: string,
-        repo?: string,
-        tag?: string,
-        message?: string,
-        platform: string = ''
-    ) {
-        logging.info(this.NAMESPACE, 'has been called with method createImage');
-
-        const options: AxiosRequestConfig = {
-            params: { fromImage, fromSrc, repo, tag, message, platform },
-            headers: {
-                'Content-Type': 'application/tar',
-                'X-Registry-Auth': process.env.DOCKER_TOKEN
-            }
-        };
+    async createImage(image: Image) {
+        logging.info(this.NAMESPACE, 'createImage was called', image);
 
         try {
-            const response = await dockerAPI.post('images/create', null, options);
+            const config: AxiosRequestConfig = {
+                params: image.getDTO(),
+                headers: { 'Content-Type': 'application/tar' }
+            };
+            logging.info(this.NAMESPACE, 'createImage - config', config);
+
+            const response = await dockerAPI.post('images/create', null, config);
             logging.info(this.NAMESPACE, 'createImage - response', response);
 
-            return { message: 'Image created with success.', status: response.status };
+            const { status, data } = response;
+            const state = data.includes('Image is up to date') ? 'updated' : 'created';
+            return { message: `Image ${state} with success.`, status, state };
         } catch (error) {
-            return { message: error.response.data.message, status: error.response.status };
+            logging.error(this.NAMESPACE, 'Image creation failed - error', error);
+            throw { message: error.response.data.message, status: error.response.status };
         }
+    }
+
+    /**
+     * Remove an image, along with any untagged parent images that were referenced by that image.
+     *
+     * Images can't be removed if they have descendant images, are being used by a running container or are being used by a build.
+     *
+     * @param name Image name or ID
+     * @param force	Remove the image even if it is being used by stopped containers or has other tags
+     * @param noprune Do not delete untagged parent images
+     * @returns
+     */
+    async delete(name: string, force: boolean = false, noprune: boolean = false) {
+        logging.info(this.NAMESPACE, 'has been called with method deleteUnused');
+
+        const options: AxiosRequestConfig = { params: { force, noprune } };
+        return await dockerAPI.delete(name, options);
     }
 
     async prune() {
