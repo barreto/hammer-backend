@@ -30,7 +30,7 @@ class ImagesController {
 
         try {
             const result = await this.imagesService.inspectImage(imageId);
-            logging.info(this.NAMESPACE, 'method index - result', result);
+            logging.info(this.NAMESPACE, 'method show - result', result);
             return res.status(200).json(result);
         } catch (error) {
             logging.error(this.NAMESPACE, error.message, error);

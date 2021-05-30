@@ -5,7 +5,9 @@ enum NAMESPACES {
     AuthController = 'Auth Controller',
     AuthService = 'Auth Service',
     UserController = 'User Controller',
-    UserService = 'User Service'
+    UserService = 'User Service',
+    ContainersController = 'Containers Controller',
+    ContainersService = 'Containers Service'
 }
 
 export default NAMESPACES;

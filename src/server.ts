@@ -10,6 +10,7 @@ import NAMESPACES from './enums/namespaces';
 import errorHandling from './middlewares/errorHandling';
 import requestLogger from './middlewares/requestLogger';
 import authRouter from './routes/authRouter';
+import containersRouter from './routes/containerRouter';
 import imagesRouter from './routes/imagesRouter';
 import userRouter from './routes/userRouter';
 import serverRunning from './utils/serverRunning';
@@ -30,6 +31,7 @@ router.use(bodyParser.json());
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
 router.use('/images', imagesRouter);
+router.use('/containers', containersRouter);
 
 /** Error Handling */
 router.use(errorHandling);
