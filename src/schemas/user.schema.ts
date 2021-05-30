@@ -47,9 +47,6 @@ const UserSchema: Schema = new Schema(
             required: true,
             validate: {
                 validator: async function (value) {
-                    // const isValidPassword = value.length >= 8 && value.length < 32;
-                    // return isValidPassword;
-
                     const regexp = new RegExp(
                         /((?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!|@|#|$|<|>])).{8,}/
                     );

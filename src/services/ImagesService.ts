@@ -27,9 +27,15 @@ export default class ImagesService {
      * @returns
      */
     async listImages(all: boolean = false, digests: boolean = false) {
-        logging.info(this.NAMESPACE, 'has been called with method getImages');
+        logging.info(this.NAMESPACE, 'listImages method was called');
         const config: AxiosRequestConfig = { params: { all, digests } };
         const { data } = await dockerAPI.get('images/json', config);
+        return data;
+    }
+
+    async inspectImage(imageId: string) {
+        logging.info(this.NAMESPACE, 'inspectImage method was called');
+        const { data } = await dockerAPI.get(`images/${imageId}/json`);
         return data;
     }
 
@@ -45,7 +51,7 @@ export default class ImagesService {
      * @returns
      */
     async createImage(image: Image) {
-        logging.info(this.NAMESPACE, 'createImage was called', image);
+        logging.info(this.NAMESPACE, 'createImage method was called', image);
 
         try {
             const config: AxiosRequestConfig = {
@@ -77,14 +83,9 @@ export default class ImagesService {
      * @returns
      */
     async delete(name: string, force: boolean = false, noprune: boolean = false) {
-        logging.info(this.NAMESPACE, 'has been called with method deleteUnused');
-
-        const options: AxiosRequestConfig = { params: { force, noprune } };
-        return await dockerAPI.delete(name, options);
-    }
-
-    async prune() {
-        logging.info(this.NAMESPACE, 'has been called with method deleteUnused');
-        return await dockerAPI.post('images/prune');
+        logging.info(this.NAMESPACE, 'delete method was called');
+        const config: AxiosRequestConfig = { params: { force, noprune } };
+        const response = await dockerAPI.delete(`images/${name}`, config);
+        return response.data;
     }
 }
