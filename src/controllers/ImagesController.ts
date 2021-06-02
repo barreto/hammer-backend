@@ -17,7 +17,17 @@ class ImagesController {
         try {
             const result = await this.imagesService.listImages();
             logging.info(this.NAMESPACE, 'method index - result', result);
-            return res.status(200).json({ images: result, count: result.length });
+            const images = result.map((item) => {
+                return {
+                    containers: item.Containers,
+                    created: item.Created,
+                    id: item.Id,
+                    repoTags: item.RepoTags,
+                    size: item.Size,
+                    virtualSize: item.VirtualSize
+                };
+            });
+            return res.status(200).json({ images, count: images.length });
         } catch (error) {
             logging.error(this.NAMESPACE, error.message, error);
             return res.status(500).json({ error: error.message });

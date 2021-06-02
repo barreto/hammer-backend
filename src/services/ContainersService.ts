@@ -60,6 +60,26 @@ export default class ContainersService {
         }
     }
 
+    async start(id: string) {
+        logging.info(this.NAMESPACE, 'start method was called');
+        const response = await dockerAPI.post(`containers/${id}/start`);
+        return response;
+    }
+
+    async stop(id: string) {
+        logging.info(this.NAMESPACE, 'stop method was called');
+        const config: AxiosRequestConfig = { params: { t: 3 } };
+        const response = await dockerAPI.post(`containers/${id}/stop`, config);
+        return response;
+    }
+
+    async restart(id: string) {
+        logging.info(this.NAMESPACE, 'start method was called');
+        const config: AxiosRequestConfig = { params: { t: 3 } };
+        const response = await dockerAPI.post(`containers/${id}/restart`, config);
+        return response;
+    }
+
     async delete(name: string, v: boolean = false, force: boolean = false, link: boolean = false) {
         logging.info(this.NAMESPACE, 'delete method was called');
         const config: AxiosRequestConfig = { params: { v, force, link } };

@@ -17,7 +17,20 @@ class ContainersController {
         try {
             const result = await this.containersService.listContainers(true);
             logging.info(this.NAMESPACE, 'method index - result', result);
-            return res.status(200).json({ containers: result, count: result.length });
+            const containers = result.map((item) => {
+                return {
+                    id: item.Id,
+                    names: item.Names,
+                    image: item.Image,
+                    command: item.Command,
+                    created: item.Created,
+                    ports: item.Ports,
+                    state: item.State,
+                    status: item.Status,
+                    hostConfig: item.HostConfig
+                };
+            });
+            return res.status(200).json({ containers, count: containers.length });
         } catch (error) {
             logging.error(this.NAMESPACE, error.message, error);
             return res.status(500).json({ error: error.message });
@@ -92,12 +105,54 @@ class ContainersController {
         }
     };
 
+    start = async (req: Request, res: Response, next: NextFunction) => {
+        const { params } = req;
+        logging.info(this.NAMESPACE, 'create method was called', { params });
+
+        try {
+            const response = await this.containersService.start(params.containerId);
+            const { data, status } = response;
+            return res.status(status).json(data);
+        } catch (error) {
+            logging.error(this.NAMESPACE, error.message, error);
+            return res.status(500).json({ message: error.message });
+        }
+    };
+
+    stop = async (req: Request, res: Response, next: NextFunction) => {
+        const { params } = req;
+        logging.info(this.NAMESPACE, 'stop method was called', { params });
+
+        try {
+            const response = await this.containersService.stop(params.containerId);
+            const { data, status } = response;
+            return res.status(status).json(data);
+        } catch (error) {
+            logging.error(this.NAMESPACE, error.message, error);
+            return res.status(500).json({ message: error.message });
+        }
+    };
+
+    restart = async (req: Request, res: Response, next: NextFunction) => {
+        const { params } = req;
+        logging.info(this.NAMESPACE, 'restart method was called', { params });
+
+        try {
+            const response = await this.containersService.restart(params.containerId);
+            const { data, status } = response;
+            return res.status(status).json(data);
+        } catch (error) {
+            logging.error(this.NAMESPACE, error.message, error);
+            return res.status(500).json({ message: error.message });
+        }
+    };
+
     delete = async (req: Request, res: Response, next: NextFunction) => {
         const { params, query } = req;
         logging.info(this.NAMESPACE, 'delete method was called', { query, params });
 
         const { containerId } = params;
-        const { v, force, link } = query;
+        const { v, force = true, link } = query;
 
         if (!containerId)
             return res.status(400).json({ message: 'value containerId is required.' });
