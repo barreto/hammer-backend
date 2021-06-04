@@ -34,6 +34,21 @@ based on the images you can download them, run, pause, restart and much more.
 
 ## :hammer_and_pick: Prerequisites
 
+### :hammer: Environment variables
+For the application to work correctly it is necessary to include some environment variables in a file dedicated to this purpose.
+
+The file must be called ```.env``` and you basically must enter the following variables.
+
+```
+PORT=
+HOSTNAME=
+DOCKER_URL=
+MONGO_USERNAME=
+MONGO_PASSWORD=
+MONGO_HOST=
+```
+To make the process easier you can just delete the *.example* in the [.env.example](https://github.com/barreto/hammer-backend/blob/main/.env.example) file and use your infrastructure information.
+
 ### :hammer: Dependencies
 
 To install the dependencies your should user the comand. an:
