@@ -1,12 +1,9 @@
-<h1 align="center" title="hammer" style="background-color: #212121">
-
-<img src="https://github.com/barreto/hammer-backend/blob/main/public/hammer-backend.png?raw=true" style="background-color: #212121" width="400"/>
-
-</h1>
+<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer-backend.png?raw=true" style="background-color: #212121" width="1000"/>
 
 ___
 
 <h4 align="center">
+    <a href="#hammer_and_pick-about">About</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
     <a href="#hammer_and_pick-techs">Techs</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
     <a href="#hammer_and_pick-prerequisites">Prerequisites</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
     <a href="#hammer_and_pick-how-to-run">How to run</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
@@ -16,6 +13,15 @@ ___
 
 ___
 
+## :hammer_and_pick: About
+
+Hammer is a consistent app aimed at whoever
+want to manage your infrastructure optimally, flexibly,
+agile and above all simple.
+
+In this way, registered customers can create images,
+delete them individually and in their entirety, create containers
+based on the images you can download them, run, pause, restart and much more.
 
 ## :hammer_and_pick: Techs
 
@@ -67,8 +73,11 @@ Fork the postman workspace to your account, download it and change according you
   <a href="https://github.com/barreto">Victor Barreto</a>
 </h4>
 
+<p align="center">
+    
+<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer.svg?raw=true"  width="300"/>
 
-<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer.svg?raw=true" align="center" width="300"/>
+</p>
 
 ___
 
