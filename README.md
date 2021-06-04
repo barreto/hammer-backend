@@ -1,6 +1,6 @@
 <h1 align="center" title="hammer" style="background-color: #212121">
 
-<img src="https://github.com/barreto/hammer-backend/blob/main/public/hammer-backend.png?raw=true" style="background-color: #212121" width="400"/>
+<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer-backend.png?raw=true" style="background-color: #212121" width="400"/>
 
 </h1>
 
@@ -67,8 +67,11 @@ Fork the postman workspace to your account, download it and change according you
   <a href="https://github.com/barreto">Victor Barreto</a>
 </h4>
 
+<p align="center">
+    
+<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer.svg?raw=true"  width="300"/>
 
-<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer.svg?raw=true" align="center" width="300"/>
+</p>
 
 ___
 
