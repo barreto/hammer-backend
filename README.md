@@ -1,4 +1,4 @@
-<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer-backend.png?raw=true" style="background-color: #212121" width="1000"/>
+<img src="https://github.com/barreto/hammer-frontend/blob/main/public/hammer-backend.png?raw=true" width="1200"/>
 
 ___
 
