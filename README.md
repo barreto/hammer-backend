@@ -100,3 +100,11 @@ ___
 
 ___
 
+
+<h5 align="center">
+
+  <img src="https://badges.pufler.dev/visits/barreto/hammer-backend" alt="Visits Badge" width="auto"/>
+  <img src="https://img.shields.io/github/last-commit/barreto/hammer-backend" alt="Last update" width="auto"/>
+  <img src="https://img.shields.io/github/repo-size/barreto/hammer-backend" alt="Repo size" width="auto"/>
+
+</h5>
